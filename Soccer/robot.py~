@@ -1,0 +1,49 @@
+import pygame, math, constants
+
+class Robot:
+    def __init__(self, surf):
+        self.surf = surf
+        self.font = pygame.font.Font(None, 32)
+        
+        self.speed = 0
+        self.pos = (100,100)
+        self.vector = (0,0)
+        self.heading = 0
+        
+    def update(self):        
+        x, y = self.polarToCartesian(self.heading, self.speed)                
+        self.setPosition((self.getPosition()[0]+x, self.getPosition()[1]+y))
+        
+        self.draw()
+        
+    def draw(self):
+        #self.surf.blit(self.sprite, self.pos)
+        pygame.draw.circle(self.surf, (255, 0, 0), (int(self.pos[0]), int(self.pos[1])), int(5*constants.WORLD_SCALE))
+        pos1 = self.polarToCartesian(self.heading, 4*constants.WORLD_SCALE)
+        pygame.draw.line(self.surf, (0, 255, 0), (pos1[0]+self.pos[0], pos1[1]+self.pos[1]), self.pos, int(1*constants.WORLD_SCALE))
+        
+        
+    
+        
+    def setSpeed(self, speed):
+        self.speed = speed
+        
+    def getSpeed(self):
+        return self.speed
+        
+    def setHeading(self, heading):
+        self.heading = heading%360
+        
+    def getHeading(self):
+        return self.heading
+
+    def getPosition(self):
+        return self.pos
+
+    def setPosition(self, pos):
+        self.pos = pos
+        
+    def polarToCartesian(self, angle, length):
+        x = math.sin(math.radians(angle))*length
+        y = math.cos(math.radians(angle))*length
+        return (x, y)

@@ -1,0 +1,1 @@
+C:\Python27\python.exe kernprof.py -l -v main.py

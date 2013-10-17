@@ -1,0 +1,59 @@
+import constants, pygame, logging, math, robot
+
+class World:
+    def __init__(self, logger, surf):
+        self.surf = surf
+        self.logger = logger
+        
+        self.logger.debug("World Loaded.")
+        
+        self.robots = []
+                        
+    
+    def update(self):
+        self.draw()
+        for x in self.robots:
+            x.update()
+            x.setHeading(x.getHeading()+1)
+        
+    def addRobot(self):
+        r = robot.Robot(self.surf)
+        r.setPosition((200, 200))
+        r.setHeading(0)
+        r.setSpeed(1)
+        self.robots.append(r)
+        
+    def resizeToFitScreen(self):
+        constants.WORLD_SCALE = float(constants.SCREEN_RESOLUTION[1]) / float(constants.MAX_WORLD_SIZE+10)
+        
+        constants.TOP_GOAL = ((constants.SCREEN_RESOLUTION[0]/2-constants.TOP_GOAL[1][0]/2*constants.WORLD_SCALE,
+        constants.SCREEN_RESOLUTION[1]/2-int(constants.OUT_FIELD[1][1]*constants.WORLD_SCALE)/2),
+        constants.TOP_GOAL[1],(0, 0, 255))
+
+        
+    def draw(self):
+        data = constants.OUT_FIELD
+        pygame.draw.rect(self.surf, data[2], (constants.SCREEN_RESOLUTION[0]/2-int(data[1][0]*constants.WORLD_SCALE)/2, 
+                        constants.SCREEN_RESOLUTION[1]/2-int(data[1][1]*constants.WORLD_SCALE)/2, 
+                        int(data[1][0]*constants.WORLD_SCALE), 
+                        int(data[1][1]*constants.WORLD_SCALE)))
+                        
+        relativeBorderWidth = (constants.WORLD_SCALE*2)
+                        
+        pygame.draw.rect(self.surf, (150, 150, 150), 
+                        (constants.SCREEN_RESOLUTION[0]/2-int(data[1][0]*constants.WORLD_SCALE)/2 - relativeBorderWidth,
+                        constants.SCREEN_RESOLUTION[1]/2-int(data[1][1]*constants.WORLD_SCALE)/2 - relativeBorderWidth, 
+                        int(data[1][0]*constants.WORLD_SCALE) + (relativeBorderWidth*2), 
+                        int(data[1][1]*constants.WORLD_SCALE) + (relativeBorderWidth*2)),
+                        int(relativeBorderWidth*2.4))
+                        
+        pygame.draw.rect(self.surf, (255, 0, 0), 
+                        (constants.SCREEN_RESOLUTION[0]/2-int(data[1][0]*constants.WORLD_SCALE)/2,
+                        constants.SCREEN_RESOLUTION[1]/2-int(data[1][1]*constants.WORLD_SCALE)/2, 
+                        int(data[1][0]*constants.WORLD_SCALE), 
+                        int(data[1][1]*constants.WORLD_SCALE)), 2)
+        
+        data = constants.TOP_GOAL
+        pygame.draw.rect(self.surf, (0,150,0), (data[0][0], data[0][1], data[1][0]*constants.WORLD_SCALE, data[1][1]*constants.WORLD_SCALE), 0)
+        pygame.draw.rect(self.surf, data[2], (data[0][0], data[0][1], data[1][0]*constants.WORLD_SCALE, data[1][1]*constants.WORLD_SCALE), 5)
+        
